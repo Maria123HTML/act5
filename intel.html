@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Demo Biblioteca UI </title>
+
+  <style>
+    :root {
+      --primary: #0f91e7;
+      --secondary: hsl(29, 62%, 68%);
+      --success: rgb(212, 55, 81);
+      --danger: #30b476;
+      --warning: #1c90be;
+      --font: 'Segoe UI', sans-serif;
+      --shadow: 0 4px 8px rgba(19, 52, 54, 0.1);
+      --radius: 0.5rem;
+      --transition: 0.3s ease;
+    }
+
+    /* Base */
+    * { box-sizing: border-box; }
+    body {
+      font-family: var(--font);
+      margin: 0;
+      padding: 0;
+      background: #a1bb10;
+      color: #10221a;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 2rem;
+    }
+
+    /* NAVBAR */
+    .navbar {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      justify-content: space-between;
+      padding: 1rem;
+      background: var(--primary);
+      color: rgb(255, 255, 255);
+      transition: background 0.3s ease, padding 0.3s ease;
+    }
+
+    .navbar__brand { font-weight: 700; font-size: 1.2rem; }
+    .navbar__menu { list-style: none; display: flex; gap: 1rem; margin: 0; padding: 0; }
+    .navbar__menu li a { color: #fff; text-decoration: none; }
+
+    .navbar.scrolled {
+      background: #ffffff;
+      color: #111;
+      padding: 0.7rem 1rem;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+
+  
+    .grid-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+      padding: 1rem 0;
+      align-items: start;
+    }
+
+    /* BOTONES */
+    .btn {
+      padding: 0.5rem 1rem;
+      border: none;
+      border-radius: var(--radius);
+      cursor: pointer;
+      transition: transform var(--transition), box-shadow var(--transition), opacity var(--transition);
+      background: #ded0e2;
+      color: #7a3d86;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .btn:hover {
+      opacity: 0.95;
+      transform: translateY(-3px);
+      box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+    }
+    .btn--primary { background: var(--primary); color: #fff; }
+    .btn--secondary { background: var(--secondary); color: #fff; }
+    .btn:disabled { background: rgba(153,140,187,0.44); cursor: not-allowed; opacity: 0.7; }
+
+    /* TARJETAS */
+    .card {
+      background: #ffffff;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+      font-size: 16px;
+      text-align: left;
+      min-height: 140px;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      /* animación de entrada */
+      opacity: 0;
+      transform: translateY(12px);
+      animation: fadeIn 0.5s ease forwards;
+    }
+
+    /* clase específica para tarjetas con imagen */
+    .card--image { text-align: center; }
+    .card__img {
+      display: block;
+      margin: 0 auto;
+      width: 100%;
+      max-width: 300px;
+      border-radius: 10px;
+    }
+
+    /* FORMULARIO */
+    .form input, .form select {
+      display: block;
+      width: 100%;
+      padding: 0.6rem;
+      margin-bottom: 1rem;
+      border-radius: var(--radius);
+      border: 1px solid #a30a9b;
+      background: #fff;
+    }
+
+    /* MODAL */
+    .modal {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw; height: 100vh;
+      background: rgba(10, 12, 20, 0.45);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 50;
+    }
+    .modal__content {
+      background: #fff;
+      padding: 2rem;
+      border-radius: var(--radius);
+      position: relative;
+      max-width: 600px;
+      width: 90%;
+      box-shadow: var(--shadow);
+    }
+    .modal__close {
+      position: absolute;
+      top: 0.6rem;
+      right: 0.8rem;
+      cursor: pointer;
+      font-size: 1.4rem;
+    }
+
+    /* TOOLTIP */
+    .tooltip { position: relative; }
+    .tooltip::after {
+      content: attr(data-tooltip);
+      position: absolute;
+      background: #222;
+      color: #fff;
+      padding: 0.4rem 0.6rem;
+      border-radius: var(--radius);
+      top: -2.6rem;
+      left: 50%;
+      transform: translateX(-50%);
+      opacity: 0;
+      pointer-events: none;
+      transition: var(--transition);
+      white-space: nowrap;
+      font-size: 0.85rem;
+    }
+    .tooltip:hover::after { opacity: 1; }
+
+    /* ALERTAS */
+    .alert { padding: 1rem; border-radius: var(--radius); margin-bottom: 1rem; color: #071012; }
+    .alert--success { background: var(--success); color: #fff; }
+    .alert--danger { background: var(--danger); color: #fff; }
+    .alert--warning { background: var(--warning); color: #fff; }
+
+    /* BADGE */
+    .badge {
+      background: var(--danger);
+      color: #fff;
+      padding: 0.2rem 0.5rem;
+      border-radius: 999px;
+      font-size: 0.8rem;
+      margin-left: 0.5rem;
+    }
+
+    /* TABS */
+    .tabs { display: flex; gap: 1rem; margin-bottom: 1rem; }
+    .tab {
+      background: #31a131;
+      padding: 0.5rem 1rem;
+      cursor: pointer;
+      border-radius: var(--radius);
+      color: #fff;
+      border: none;
+    }
+    .tab.active { background: var(--primary); color: #fff; }
+
+    /* RESPONSIVE */
+    @media (max-width: 600px) {
+      .navbar__menu { flex-direction: column; gap: 0.5rem; }
+    }
+
+    /* ANIMACIONES (ejemplo) */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(12px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+  <nav class="navbar">
+    <div style="display:flex;align-items:center;gap:12px">
+      <img src="https://cdn-icons-png.flaticon.com/512/1828/1828861.png" alt="logo" class="navbar__logo" style="width:48px;height:48px;">
+      <div class="navbar__brand">UI Components</div>
+    </div>
+
+    <ul class="navbar__menu">
+      <li><a href="#">Inicio</a></li>
+      <li><a href="#">Componentes</a></li>
+      <li><a href="#">Contacto</a></li>
+    </ul>
+  </nav>
+
+  <main class="container">
+    <!-- Ejemplo de Grid aplicado a tarjetas -->
+    <section>
+      <h2>Tarjetas ( Grid)</h2>
+
+      <!-- envuelve las tarjetas en grid-container -->
+      <div class="grid-container">
+        <div class="card card--image">
+          <img class="card__img" src="https://images.unsplash.com/photo-1522199710521-72d69614c702?q=80&w=800&auto=format" alt="ejemplo">
+          <h3>Título 1</h3>
+          <p>Contenido de ejemplo dentro de una tarjeta visual.</p>
+        </div>
+
+        <div class="card">
+          <h3>Título 2</h3>
+          <p>Otra tarjeta de contenido. Aquí puedes mostrar componentes o ejemplos.</p>
+        </div>
+
+        <div class="card">
+          <h3>Título 3</h3>
+          <p>Más contenido para comprobar el comportamiento del grid.</p>
+        </div>
+
+        <div class="card">
+          <h3>Título 4</h3>
+          <p>Última tarjeta del ejemplo.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Botones -->
+    <section>
+      <h2>Botones</h2>
+      <button class="btn btn--primary">Primario</button>
+      <button class="btn btn--secondary">Secundario</button>
+      <button class="btn" disabled>Deshabilitado</button>
+    </section>
+
+    <!-- Formulario -->
+    <section>
+      <h2>Formulario</h2>
+      <form class="form">
+        <input type="text" placeholder="Nombre" required>
+        <select>
+          <option>Opción 1</option>
+          <option>Opción 2</option>
+        </select>
+        <label><input type="checkbox"> Acepto términos</label>
+        <button class="btn btn--primary" type="submit">Enviar</button>
+      </form>
+    </section>
+
+    <!-- Modal -->
+    <section>
+      <h2>Modal</h2>
+      <button class="btn btn--primary" onclick="openModal()">Abrir Modal</button>
+      <div class="modal" id="modal">
+        <div class="modal__content">
+          <span class="modal__close" onclick="closeModal()">&times;</span>
+          <p>Contenido del modal</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Tooltip -->
+    <section>
+      <h2>Tooltip</h2>
+      <button class="btn tooltip" data-tooltip="Información adicional">Pasa el mouse</button>
+    </section>
+
+    <!-- Alertas -->
+    <section>
+      <h2>Alertas</h2>
+      <div class="alert alert--success">Éxito</div>
+      <div class="alert alert--danger">Error</div>
+      <div class="alert alert--warning">Advertencia</div>
+    </section>
+
+    <!-- Badge -->
+    <section>
+      <h2>Badge</h2>
+      <button class="btn">Notificaciones <span class="badge">3</span></button>
+    </section>
+
+    <!-- Acordeón -->
+    <section>
+      <h2>Acordeón</h2>
+      <details>
+        <summary>Dar clic para expandir</summary>
+        <p>Contenido del acordeón.</p>
+      </details>
+    </section>
+
+    <!-- Tabs -->
+    <section>
+      <h2>Tabs</h2>
+      <div class="tabs">
+        <button class="tab active" onclick="showTab(0)">Tab 1</button>
+        <button class="tab" onclick="showTab(1)">Tab 2</button>
+      </div>
+      <div class="tab-content" id="tab0">Contenido del Tab 1</div>
+      <div class="tab-content" id="tab1" style="display:none">Contenido del Tab 2</div>
+    </section>
+  </main>
+
+  <script>
+    function openModal() {
+      document.getElementById('modal').style.display = 'flex';
+    }
+    function closeModal() {
+      document.getElementById('modal').style.display = 'none';
+    }
+    function showTab(index) {
+      document.querySelectorAll('.tab-content').forEach((el, i) => {
+        el.style.display = i === index ? 'block' : 'none';
+      });
+      document.querySelectorAll('.tab').forEach((el, i) => {
+        el.classList.toggle('active', i === index);
+      });
+    }
+
+    // Ejemplo opcional: navbar cambia al hacer scroll
+    window.addEventListener("scroll", () => {
+      const nav = document.querySelector(".navbar");
+      nav.classList.toggle("scrolled", window.scrollY > 50);
+    });
+  </script>
+</body>
+</html>
